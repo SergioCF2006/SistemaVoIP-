@@ -5,8 +5,8 @@ echo ========================================================
 
 if not exist bin mkdir bin
 
-echo Compilando archivos Java...
-javac -encoding UTF-8 -d bin src\com\voip\model\*.java src\com\voip\registry\*.java src\com\voip\core\*.java src\com\voip\sip\*.java src\com\voip\rtp\*.java src\com\voip\gui\*.java src\com\voip\Main.java
+echo Compilando archivos Java para Java 17 (--release 17)...
+javac --release 17 -encoding UTF-8 -d bin src\com\voip\model\*.java src\com\voip\registry\*.java src\com\voip\core\*.java src\com\voip\sip\*.java src\com\voip\rtp\*.java src\com\voip\gui\*.java src\com\voip\Main.java
 
 if %ERRORLEVEL% NEQ 0 (
     echo.
