@@ -249,15 +249,16 @@ public class CallManager implements SipSignalingListener {
     public synchronized void onOkReceived(SipParser.ParsedMessage msg) {
         log("SIP 200 OK recibido de " + msg.getFromExtension());
         if (currentState == CallState.LLAMANDO && currentSession != null) {
-            // Enviar ACK
-            String ackText = SipMessage.createAck(localExtension, localIp, msg.getFromExtension(), msg.getFromIp(), msg.getCallId());
+            String targetIp = currentSession.getRemoteIp();
+            // Enviar ACK a la IP remota del destino
+            String ackText = SipMessage.createAck(localExtension, localIp, msg.getFromExtension(), targetIp, msg.getCallId());
             try {
-                signalingService.sendSipText(ackText, msg.getFromIp(), 5060);
+                signalingService.sendSipText(ackText, targetIp, 5060);
             } catch (IOException ignored) {}
 
-            // Iniciar audio RTP
+            // Iniciar audio RTP hacia la IP remota del destino
             try {
-                audioEngine.startStreaming(msg.getFromIp(), msg.getRemoteRtpPort());
+                audioEngine.startStreaming(targetIp, msg.getRemoteRtpPort());
                 setState(CallState.EN_LLAMADA, "En llamada con " + msg.getFromExtension());
             } catch (Exception e) {
                 log("Error al iniciar audio RTP: " + e.getMessage());
